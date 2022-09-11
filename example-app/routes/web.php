@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,10 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-
-Route::group(attributes: ['prefix' => 'courses', 'as' => 'course.'], routes: function(){
-    Route::get('/',action:[CourseController::class, 'index']);
-    Route::get('/create',action:[CourseController::class, 'create'])->name('create');
-    Route::post('/create',action:[CourseController::class, 'store'])->name('store');
+Route::get('/', function () {
+    return view('welcome');
 });
