@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Course\DestroyRequest;
+use App\Http\Requests\Course\StoreRequest;
+use App\Http\Requests\Course\UpdateRequest;
 use App\Models\Course;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 class CourseController extends Controller
 {
     public function index()
     {
-        $data = Course::get();
+        return view('course.index');
+    }
+    public function api()
+    {
 
-        return view('course.index',[
-            'data' => $data,
-        ]);
+        return DataTables::of(Course::query())->make(true);
     }
 
     /**
@@ -29,11 +34,15 @@ class CourseController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $object = new Course();
-        $object->name = $request->get('name');
-        $object->save();
+//        $object = new Course();
+//        $object->fill($request->validated());
+//        $object->save();
+
+        Course::create($request->validated());
+
+        return redirect()->route('courses.index');
     }
 
     /**
@@ -55,7 +64,9 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        //
+        return view('course.edit', [
+           'each' => $course,
+        ]);
     }
 
     /**
@@ -65,9 +76,19 @@ class CourseController extends Controller
      * @param  \App\Models\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCourseRequest $request, Course $course)
+    public function update(UpdateRequest $request, Course $course)
     {
-        //
+        $course->update(
+            $request->except([
+                '_token',
+                '_method',
+            ])
+        );
+
+//        $course->fill($request->except('_token'));
+//        $course->save();
+
+        return redirect()->route('courses.index');
     }
 
     /**
@@ -76,8 +97,10 @@ class CourseController extends Controller
      * @param  \App\Models\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Course $course)
+    public function destroy(DestroyRequest $request,$course)
     {
-        //
+        Course::destroy($course);
+
+        return redirect()->route('courses.index');
     }
 }

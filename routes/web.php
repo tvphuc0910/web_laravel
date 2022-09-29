@@ -15,9 +15,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-
-Route::group(attributes: ['prefix' => 'courses', 'as' => 'course.'], routes: function(){
-    Route::get('/',action:[CourseController::class, 'index']);
-    Route::get('/create',action:[CourseController::class, 'create'])->name('create');
-    Route::post('/create',action:[CourseController::class, 'store'])->name('store');
+Route::resource('courses',CourseController::class)->except([
+    'show',
+]);
+Route::get('courses/api', [CourseController::class, 'api'])->name('courses.api');
+Route::get('test',function (){
+    return view('layout.master');
 });
+//Route::group(attributes: ['prefix' => 'courses', 'as' => 'course.'], routes: function(){
+//    Route::get('/',action:[CourseController::class, 'index'])->name('index');
+//    Route::get('/create',action:[CourseController::class, 'create'])->name('create');
+//    Route::post('/create',action:[CourseController::class, 'store'])->name('store');
+//    Route::delete('/destroy/{course}',action:[CourseController::class, 'destroy'])->name('destroy');
+//    Route::get('/edit/{course}', [CourseController::class, 'edit'])->name('edit');
+//    Route::put('/edit/{course}', [CourseController::class, 'update'])->name('update');
+//});
