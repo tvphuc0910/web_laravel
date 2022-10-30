@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,9 +20,13 @@ Route::resource('courses',CourseController::class)->except([
     'show',
 ]);
 Route::get('courses/api', [CourseController::class, 'api'])->name('courses.api');
-Route::get('test',function (){
-    return view('layout.master');
-});
+Route::get('courses/api/name', [CourseController::class, 'apiName'])->name('courses.api.name');
+
+
+Route::resource('students', StudentController::class)->except([
+    'show',
+]);
+Route::get('students/api', [StudentController::class, 'api'])->name('students.api');
 //Route::group(attributes: ['prefix' => 'courses', 'as' => 'course.'], routes: function(){
 //    Route::get('/',action:[CourseController::class, 'index'])->name('index');
 //    Route::get('/create',action:[CourseController::class, 'create'])->name('create');

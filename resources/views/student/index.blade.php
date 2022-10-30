@@ -17,7 +17,7 @@
             </div>
         @endif
         <div class="card-body">
-            <a class="btn btn-success" href="{{ route('courses.create') }}">
+            <a class="btn btn-success" href="{{ route('students.create') }}">
                 Thêm
             </a>
             <div class="form-group">
@@ -28,8 +28,10 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Student Number</th>
-                        <th>Created At</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>Status</th>
+                        <th>Course Name</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -47,12 +49,12 @@
 {{--                            {{ $each->year_created_at }}--}}
 {{--                        </td>--}}
 {{--                        <td>--}}
-{{--                            <a class="btn btn-primary" href="{{ route('courses.edit', $each) }}">--}}
+{{--                            <a class="btn btn-primary" href="{{ route('students.edit', $each) }}">--}}
 {{--                                Edit--}}
 {{--                            </a>--}}
 {{--                        </td>--}}
 {{--                        <td>--}}
-{{--                            <form action="{{ route('courses.destroy', $each) }}" method="post">--}}
+{{--                            <form action="{{ route('students.destroy', $each) }}" method="post">--}}
 {{--                                @csrf--}}
 {{--                                @method('DELETE')--}}
 {{--                                <button class="btn btn-danger">Delete</button>--}}
@@ -77,32 +79,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(function() {
-            $("#select-name").select2({
-                ajax: {
-                    url: "{{ route('courses.api.name') }}",
-                    dataType: 'json',
-                    data: function (params) {
-                        return {
-                            q: params.term, // search term
-                        };
-                    },
-                    processResults: function (data, params) {
-                        return {
-                            results: $.map(data, function (item) {
-                                return {
-                                    text: item.name,
-                                    id: item.id
-                                }
-                            })
-                        };
-                    }
-                },
-                placeholder: 'Search for a Name',
-            });
 
-            $('#select-name').change( function () {
-                table.columns(0).search( this.value ).draw();
-            } );
 
             let table = $('#table-index').DataTable({
                 dom: 'Blfrtip',
@@ -118,18 +95,20 @@
                 ],
                 processing: true,
                 serverSide: true,
-                ajax: '{!! route('courses.api') !!}',
+                ajax: '{!! route('students.api') !!}',
                 columnDefs: [
                     { className: "not-export", "targets": [ 3 ]}
                 ],
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
-                    { data: 'students_count', name: 'number_students' },
-                    { data: 'created_at', name: 'created_at' },
+                    { data: 'gender', name: 'gender' },
+                    { data: 'age', name: 'age' },
+                    { data: 'status', name: 'status' },
+                    { data: 'course_name', name: 'course_name' },
                     {
                         data: 'edit',
-                        targets: 3,
+                        targets: 4,
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row, meta) {
@@ -140,7 +119,7 @@
                     },
                     {
                         data: 'destroy',
-                        targets: 4,
+                        targets: 5,
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row, meta) {

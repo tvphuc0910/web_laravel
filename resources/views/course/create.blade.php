@@ -7,7 +7,8 @@
 {{--        </ul>--}}
 {{--    </div>--}}
 {{--@endif--}}
-
+@extends('layout.master')
+@section('content')
 <form action="{{ route('courses.store') }}" method="post">
     @csrf
     Name
@@ -20,3 +21,4 @@
     <br>
     <button>Create</button>
 </form>
+@endsection

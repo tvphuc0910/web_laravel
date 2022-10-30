@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Hyper - Responsive Bootstrap 4 Admin Dashboard</title>
+    <title>{{ $title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name="author" />
@@ -32,11 +32,29 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box">
-                            <h4 class="page-title">Courses</h4>
+                            <h4 class="page-title">{{$title}}</h4>
                         </div>
                     </div>
                 </div>
                 <div class="row">
+                        @if ($errors->any())
+                            <div class="col-12">
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        @endif
+                        @if (session()->has('success'))
+                            <div class="col-12">
+                                <div class="alert alert-success">
+                                    {{ session()->get('success') }}
+                                </div>
+                            </div>
+                        @endif
                     <div class="col-12">
                         @yield('content')
                     </div>
