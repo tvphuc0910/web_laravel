@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Yajra\DataTables\DataTables;
 
@@ -55,6 +56,16 @@ class StudentController extends Controller
             ->addColumn('destroy', function ($object) {
                 return route('students.destroy', $object);
             })
+            ->filterColumn('course_name', function ($query, $keyword){
+                $query->whereHas('course', function ($q) use ($keyword) {
+                   return $q->where('id', $keyword);
+                });
+            })
+            ->filterColumn('status', function ($query, $keyword){
+                if($keyword !== '0') {
+                    $query->where('status', $keyword);
+                }
+            })
             ->make(true);
     }
     /**
@@ -78,7 +89,10 @@ class StudentController extends Controller
      */
     public function store(StoreStudentRequest $request)
     {
-        $this->model->create($request->validated());
+        $path = Storage::disk('public')->putFile('avatars', $request->file('avatar'));
+        $arr = $request->validated();
+        $arr['avatar'] = $path;
+        $this->model->create($arr);
         return redirect()->route('students.index')->with('success', 'Thêm thành công !');
     }
 

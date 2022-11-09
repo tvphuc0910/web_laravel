@@ -2,7 +2,7 @@
 @section('content')
 
 
-    <form action="{{ route('students.store') }}" method="post">
+    <form action="{{ route('students.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label>Name</label>
@@ -25,6 +25,9 @@
             {{ $option }}
             <br>
         @endforeach
+        Avatar
+        <input type="file" name="avatar">
+        <br>
         Course
         <br>
         <select name="course_id">

@@ -31,7 +31,9 @@
                         <th>Student Number</th>
                         <th>Created At</th>
                         <th>Edit</th>
+                        @if(checkSuperAdmin())
                         <th>Delete</th>
+                        @endif
                     </tr>
                 </thead>
 
@@ -138,6 +140,7 @@
                                     </a>`;
                         }
                     },
+                    @if(checkSuperAdmin())
                     {
                         data: 'destroy',
                         targets: 4,
@@ -151,6 +154,7 @@
                                     </form>`;
                         }
                     },
+                    @endif
                 ]
             });
             $(document).on('click', '.btn-delete',function (){

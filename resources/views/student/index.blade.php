@@ -5,23 +5,22 @@
 @endpush
 @section('content')
     <div class="card">
-        @if ($errors->any())
-            <div class="card-header">
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-            </div>
-        @endif
         <div class="card-body">
             <a class="btn btn-success" href="{{ route('students.create') }}">
                 Thêm
             </a>
             <div class="form-group">
-                <select id="select-name"></select>
+                <select id="select-course-name"></select>
+            </div>
+            <div class="form-group">
+                <select id="select-status" class="form-control">
+                    <option value="0">Tất cả</option>
+                    @foreach($arrStudentStatus as $option => $value)
+                        <option value="{{ $value }}">
+                            {{ $option }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
             <table class="table table-striped table-centered mb-0" id="table-index">
                 <thead>
@@ -31,6 +30,7 @@
                         <th>Gender</th>
                         <th>Age</th>
                         <th>Status</th>
+                        <th>Avatar</th>
                         <th>Course Name</th>
                         <th>Edit</th>
                         <th>Delete</th>
@@ -79,6 +79,39 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(function() {
+            $("#select-course-name").select2({
+                ajax: {
+                    url: "{{ route('courses.api.name') }}",
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                        };
+                    },
+                    processResults: function (data, params) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    }
+                },
+                placeholder: 'Search for a Name',
+                allowClear: true,
+            });
+
+            $('#select-course-name').change( function () {
+                table.columns(6).search( this.value ).draw();
+            } );
+
+            $('#select-status').change( function () {
+                let value = $(this).val();
+                table.columns(4).search(value).draw();
+            } );
+
 
 
             let table = $('#table-index').DataTable({
@@ -105,10 +138,22 @@
                     { data: 'gender', name: 'gender' },
                     { data: 'age', name: 'age' },
                     { data: 'status', name: 'status' },
+                    {
+                        data: 'avatar',
+                        targets: 5,
+                        orderable: false,
+                        searchable: false,
+                        render: function (data, type, row, meta) {
+                            if(!data){
+                                return '';
+                            }
+                            return `<img src="{{ public_path() }}/${data}">`;
+                        }
+                    },
                     { data: 'course_name', name: 'course_name' },
                     {
                         data: 'edit',
-                        targets: 4,
+                        targets: 7,
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row, meta) {
@@ -119,7 +164,7 @@
                     },
                     {
                         data: 'destroy',
-                        targets: 5,
+                        targets: 8,
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row, meta) {
