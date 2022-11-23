@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Throwable;
 
 class AuthController extends Controller
@@ -16,9 +18,10 @@ class AuthController extends Controller
         try {
             $user = User::query()
                 ->where('email', $request->get('email'))
-                ->where('password', $request->get('password'))
                 ->firstOrFail();
-
+            if(!Hash::check($request->get('password'), $user->password)) {
+                throw new Exception('Invalid password');
+            }
             session()->put('id', $user->id);
             session()->put('name', $user->name);
             session()->put('avatar', $user->avatar);
@@ -35,5 +38,20 @@ class AuthController extends Controller
         session()>flush();
 
         return redirect()->route('login');
+    }
+    public function register()
+    {
+        return view('auth.register');
+    }
+
+    public function process_register(Request $request)
+    {
+        User::query()
+            ->create([
+               'name' => $request->get('name'),
+               'email' => $request->get('email'),
+               'password' => Hash::make($request->get('password')),
+               'level' => 0,
+            ]);
     }
 }
